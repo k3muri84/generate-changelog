@@ -3,8 +3,6 @@
 # regex part inspired by the commit hook script https://github.com/pbetkier/add-issue-id-hook
 # needs jira-python https://github.com/pycontribs/jira
 # install via `pip install jira`
-# TODO get auth https://jira.readthedocs.io/en/latest/examples.html#authentication
-# TODO generate changelog file, after query type and summary
 
 import subprocess
 import re
