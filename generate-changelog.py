@@ -8,7 +8,7 @@ import subprocess
 import re
 from jira import JIRA
 
-jira = JIRA('https://your.jira.domain')
+jira = JIRA('https://your.jira.tld')
 
 project_format = '[A-Z][A-Z]+'
 issue_pattern = '{}-[\d]+'.format(project_format)
