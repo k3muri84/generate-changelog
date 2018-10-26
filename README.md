@@ -7,7 +7,7 @@ Also set the fix version in Jira so one can see later in which release it was in
 
 ## Alternatives
 If you just look for a changelog generator for github, jump to [this](https://github.com/github-changelog-generator/github-changelog-generator).
-There is also a [js based changelog generator] (https://github.com/lob/generate-changelog).
+There is also a [js based changelog generator](https://github.com/lob/generate-changelog).
 
 ## Open ToDos
 - [ ] get auth for jira, see https://jira.readthedocs.io/en/latest/examples.html#authentication
