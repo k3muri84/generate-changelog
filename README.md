@@ -9,6 +9,16 @@ If you just look for a changelog generator for github, jump to [this](https://gi
 There is also a [js based changelog generator](https://github.com/lob/generate-changelog).
 None of them is dealing with jira.
 
+## Getting started
+
+Running the script locally is easy. First, install the dependencies:
+
+      % pip install .
+
+You can then run the generator using
+
+      % python -m generator
+
 ## Open ToDos
 - [ ] get auth for jira, see https://jira.readthedocs.io/en/latest/examples.html#authentication
 - [ ] query type and summary for the collected jira issues
