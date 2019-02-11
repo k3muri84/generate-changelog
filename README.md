@@ -29,6 +29,5 @@ You can then run the generator using
 ## Requirements
 - python 2.x
 - [jira-python](https://github.com/pycontribs/jira)
-    - install via `pip install jira`
 
 [1]: https://keepachangelog.com/en/1.0.0/
