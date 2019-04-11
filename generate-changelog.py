@@ -12,7 +12,7 @@ from jira import JIRA, JIRAError
 from datetime import datetime
 
 # point to your jira installation
-jira = JIRA(server=('https://jira.intapps.it'), auth=('changelogbot', 'cryp71cp455w0rd'))
+jira = JIRA(server=('https://jira.yourdomain.com'), auth=('changelogbot', 'cryp71cp455w0rd'))
 
 # configure your jira project or just leave it to find all
 project_format = '[A-Z][A-Z]+'
