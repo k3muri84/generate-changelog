@@ -22,6 +22,7 @@ None of them is dealing with jira.
 - python 2.x
 - [jira-python](https://github.com/pycontribs/jira)
     - install via `pip install jira`
+- jira admin rights - to create fix versions
 
 [1]: https://keepachangelog.com/en/1.0.0/
 
