@@ -29,7 +29,7 @@ None of them is dealing with jira.
 ## Usage
 
 ### Quick Usage
-just execute `./generate-changelog.py`
+just execute `./generate-changelog.py` in the repo folder
 
 ## Configuration
 ### version info
