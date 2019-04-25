@@ -13,7 +13,6 @@ from datetime import datetime
 
 # point to your jira installation
 jira = JIRA(server=('https://jira.yourdomain.com'), auth=('changelogbot', 'cryp71cp455w0rd'))
-
 # configure your jira project or just leave it to find all
 project_format = '[A-Z][A-Z]+'
 # define jira project to create version
@@ -24,7 +23,9 @@ bugTypes = ['Bug', 'InstaBug']
 featureTypes = ['Story, Task']
 refactoringTypes = ['Refactoring'] 
 
-s git log to find all changes since last tag (use on master only, only uses commit messages)
+changelogFilename = "CHANGELOG.md"
+
+# git log to find all changes since last tag (use on master only, only uses commit messages)
 git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'
 # if you want to print branch infos too use lightly different output
 # git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --oneline --decorate'
@@ -100,14 +101,31 @@ for issueCode in issues:
     else:
         added.append(issue)
 
-changelog = "## [" + release_version + "] Beta " + props['buildNumber'] + " - " + datetime.today().strftime("%Y-%m-%d") + "\n"
-changelog += "### Added\n"
-for issues_added in added:
-    changelog += " * " + issues_added.key + " " + issues_added.fields.summary + "\n"
-
-changelog += "\n### Fixed\n"
-for bug in bugs:
-    changelog += " * " + bug.key + " " + bug.fields.summary  + "\n"
+changelogHeading = "## [" + release_version + "] Beta " + props['buildNumber'] + " - " + datetime.today().strftime("%Y-%m-%d") + "\n"
+changelog = ""
+if added:
+    changelog += "### Added\n"
+    for issues_added in added:
+        changelog += " * " + issues_added.key + " " + issues_added.fields.summary + "\n"
+    changelog += "\n"
+if bugs:
+    changelog += "### Fixed\n"
+    for bug in bugs:
+        changelog += " * " + bug.key + " " + bug.fields.summary  + "\n"
 
 print(changelog)
+
+f = open("CHANGES.md", "w+")
+f.write(changelog)
+f.close()
+
+changelog += "\n"
+f = open(changelogFilename, "r")
+contents = f.readlines()
+f.close()
+contents.insert(8, changelog)
+contents.insert(8, changelogHeading)
+f = open(changelogFilename, "w+")
+f.writelines(contents)
+f.close()
 
