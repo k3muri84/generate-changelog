@@ -101,17 +101,20 @@ for issueCode in issues:
     else:
         added.append(issue)
 
+def render_issue(issue):
+    return " * " + issue.key + " " + issue.fields.summary + "\n"
+
 changelogHeading = "## [" + release_version + "] Beta " + props['buildNumber'] + " - " + datetime.today().strftime("%Y-%m-%d") + "\n"
 changelog = ""
 if added:
     changelog += "### Added\n"
     for issues_added in added:
-        changelog += " * " + issues_added.key + " " + issues_added.fields.summary + "\n"
+        changelog += render_issue(issues_added)
     changelog += "\n"
 if bugs:
     changelog += "### Fixed\n"
     for bug in bugs:
-        changelog += " * " + bug.key + " " + bug.fields.summary  + "\n"
+        changelog += render_issue(bug)
 
 print(changelog)
 
