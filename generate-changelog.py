@@ -12,7 +12,8 @@ from jira import JIRA, JIRAError
 from datetime import datetime
 
 # point to your jira installation
-jira = JIRA(server=('https://jira.yourdomain.com'), auth=('changelogbot', 'cryp71cp455w0rd'))
+jiraBaseUrl = 'https://jira.yourdomain.com'
+jira = JIRA(server=(jiraBaseUrl), auth=('changelogbot', 'cryp71cp455w0rd'))
 # configure your jira project or just leave it to find all
 project_format = '[A-Z][A-Z]+'
 # define jira project to create version
