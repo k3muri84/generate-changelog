@@ -19,7 +19,7 @@ None of them is dealing with jira.
 - [ ] optional: insert build types (e.g. beta or production)
 
 ## Requirements
-- python 2.x
+- Python 2.x
 - [jira-python](https://github.com/pycontribs/jira)
     - install via `pip install jira`
 - jira admin rights - to create fix versions
