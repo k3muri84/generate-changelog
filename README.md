@@ -21,7 +21,6 @@ None of them is dealing with jira.
 ## Requirements
 - Python 2.x
 - [jira-python](https://github.com/pycontribs/jira)
-    - install via `pip install jira`
 - jira admin rights - to create fix versions
 
 ## Setup
@@ -30,6 +29,10 @@ On Python 3.3 and up, start the [virtual environment][1] in order to keep everyt
 
     % python3 -m venv environment
     % source environment/bin/activate
+
+Install the dependencies:
+
+    % pip install -r requirements.txt
 
 ### Running the script
 
