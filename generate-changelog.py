@@ -21,6 +21,10 @@ project_format = '[A-Z][A-Z]+'
 # define jira project to create version
 project_version = 'CORE'
 
+# Flag whether the script should automatically add the "version" information
+# to the issues in Jira.
+is_update_fix_versions_enabled = True
+
 # configure possible issue types
 bugTypes = ['Bug', 'InstaBug']
 featureTypes = ['Story, Task']
@@ -52,6 +56,10 @@ def load_properties(filepath, sep='=', comment_char='#'):
     return props
 
 def set_fixVersions(issue, version):
+    if not is_update_fix_versions_enabled:
+        # The user chose not to update the fix version; don't continue.
+        return
+
     fixVersions = []
     for existing_version in issue.fields.fixVersions:
         fixVersions.append({'name': existing_version.name})
