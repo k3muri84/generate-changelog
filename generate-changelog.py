@@ -105,7 +105,9 @@ for issueCode in issues:
         added.append(issue)
 
 def render_issue(issue):
-    return " * " + issue.key + " " + issue.fields.summary + "\n"
+    issue_url = jiraBaseUrl + "/browse/" + issue.key
+
+    return " * [" + issue.key + "](" + issue_url + ") " + issue.fields.summary + "\n"
 
 changelogHeading = "## [" + release_version + "] Beta " + props['buildNumber'] + " - " + datetime.today().strftime("%Y-%m-%d") + "\n"
 changelog = ""
