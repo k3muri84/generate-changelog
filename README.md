@@ -26,10 +26,19 @@ None of them is dealing with jira.
 
 [1]: https://keepachangelog.com/en/1.0.0/
 
-## Usage
+## Setup
 
-### Quick Usage
-just execute `./generate-changelog.py` in the repo folder
+On Python 3.3 and up, start the [virtual environment][1] in order to keep everything self-contained:
+
+    % python3 -m venv environment
+    % source environment/bin/activate
+
+### Running the script
+
+Make sure your working directory is in the repository folder. Now, just execute it:
+
+    % ./generate-changelog.py
+
 
 ## Configuration
 ### version info
@@ -42,3 +51,5 @@ git log to find all changes since last tag (use on master only, only uses commit
 or
 if you want to scan branch infos too use instead:
 `git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --oneline --decorate'`
+
+[2]: https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments
