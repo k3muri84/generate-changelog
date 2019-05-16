@@ -24,8 +24,6 @@ None of them is dealing with jira.
     - install via `pip install jira`
 - jira admin rights - to create fix versions
 
-[1]: https://keepachangelog.com/en/1.0.0/
-
 ## Setup
 
 On Python 3.3 and up, start the [virtual environment][1] in order to keep everything self-contained:
@@ -52,4 +50,5 @@ or
 if you want to scan branch infos too use instead:
 `git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --oneline --decorate'`
 
+[1]: https://keepachangelog.com/en/1.0.0/
 [2]: https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments
