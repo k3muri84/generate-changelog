@@ -20,6 +20,7 @@ None of them is dealing with jira.
 
 ## Requirements
 - Python 2.x
+  - `pip` for installing dependencies
 - jira admin rights - to create fix versions
 
 ## Setup
