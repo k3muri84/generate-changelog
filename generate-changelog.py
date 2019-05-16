@@ -67,7 +67,7 @@ def set_fixVersions(issue, version):
     try:
         issue.update(fields={'fixVersions': fixVersions})
     except JIRAError as e:
-        print e.status_code, e.text, issue.key
+        print(e.status_code, e.text, issue.key)
 
 def scan_for_tickets():
     issue_pattern = '{}-[\d]+'.format(project_format)
