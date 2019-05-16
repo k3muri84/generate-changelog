@@ -108,13 +108,13 @@ changelogHeading = "## [" + release_version + "] Beta " + props['buildNumber'] +
 changelog = ""
 if added:
     changelog += "### Added\n"
-    for issues_added in added:
-        changelog += render_issue(issues_added)
+    for issue in added:
+        changelog += render_issue(issue)
     changelog += "\n"
 if bugs:
     changelog += "### Fixed\n"
-    for bug in bugs:
-        changelog += render_issue(bug)
+    for issue in bugs:
+        changelog += render_issue(issue)
 
 print(changelog)
 
