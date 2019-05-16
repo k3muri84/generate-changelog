@@ -11,8 +11,10 @@ import re
 from jira import JIRA, JIRAError
 from datetime import datetime
 
-# point to your jira installation
+# The base URL of your Jira installation.
+# Must not have a trailing slash!
 jiraBaseUrl = 'https://jira.yourdomain.com'
+
 jira = JIRA(server=(jiraBaseUrl), auth=('changelogbot', 'cryp71cp455w0rd'))
 # configure your jira project or just leave it to find all
 project_format = '[A-Z][A-Z]+'
