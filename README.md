@@ -20,7 +20,6 @@ None of them is dealing with jira.
 
 ## Requirements
 - Python 2.x
-- [jira-python](https://github.com/pycontribs/jira)
 - jira admin rights - to create fix versions
 
 ## Setup
@@ -52,6 +51,10 @@ git log to find all changes since last tag (use on master only, only uses commit
 or
 if you want to scan branch infos too use instead:
 `git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --oneline --decorate'`
+
+## Dependencies
+
+- [jira-python](https://github.com/pycontribs/jira)
 
 [1]: https://keepachangelog.com/en/1.0.0/
 [2]: https://packaging.python.org/tutorials/installing-packages/#creating-virtual-environments
