@@ -12,33 +12,41 @@ None of them is dealing with jira.
 ## Open ToDos
 - [x] get auth for jira, see https://jira.readthedocs.io/en/latest/examples.html#authentication
 - [x] query type and summary for the collected jira issues
-- [ ] insert changeset to changelog file
+- [x] insert changeset to changelog file
 - [x] set release / fix version in jira
 - [ ] if list is empty show alternative output with version info
 - [ ] optional: transition issues
-- [ ] optional: insert build types (e.g. beta or production)
+- [x] optional: insert build types (e.g. beta or production)
+- [x] migrate to python3
 
 ## Requirements
 - python 2.x
+- `pip` for installing jira module
 - [jira-python](https://github.com/pycontribs/jira)
     - install via `pip install jira`
 - jira admin rights - to create fix versions
 
-[1]: https://keepachangelog.com/en/1.0.0/
 
 ## Usage
 
-### Quick Usage
-just execute `./generate-changelog.py` in the repo folder
+### basic configuration
+- setup jira url
+- define jira project in which fix version should be created
+- configure possible issue type for your project
 
-## Configuration
-### version info
-currently the script parses a gradle property file, tweak the script to your needs, PR
+### getting version info
+currently the script parses a gradle property file, tweak the script to your needs: e.g. pass info via argument, PR
 welcome
 
-### git
-git log to find all changes since last tag (use on master only, only uses commit messages)
-`git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --format="%s"'`
-or
-if you want to scan branch infos too use instead:
+### git history
+Default: using git log to find all changes since last tag (use on master only, only uses commit messages)  
+`git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --format="%s"'`  
+or if you want to scan branch infos too use instead:  
 `git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --oneline --decorate'`
+
+### Quick Usage
+execute `./generate-changelog.py` in the repository folder
+
+
+
+[1]: https://keepachangelog.com/en/1.0.0/
