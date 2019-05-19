@@ -12,7 +12,9 @@ from jira import JIRA, JIRAError
 from datetime import datetime
 
 # point to your jira installation
-jira = JIRA(server=('https://jira.yourdomain.com'), auth=('changelogbot', 'cryp71cp455w0rd'))
+jira_server = 'https://jira.yourdomain.com'
+# configure authentication to your needs, see jira module docs for more auth modes
+jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
 # configure your jira project or just leave it to find all
 project_format = '[A-Z][A-Z]+'
 # define jira project to create version
@@ -21,7 +23,7 @@ project_version = 'CORE'
 # configure possible issue types
 bugTypes = ['Bug', 'InstaBug']
 featureTypes = ['Story, Task']
-refactoringTypes = ['Refactoring'] 
+refactoringTypes = ['Refactoring']
 
 changelogFilename = "CHANGELOG.md"
 
@@ -56,7 +58,7 @@ def set_fixVersions(issue, version):
     try:
         issue.update(fields={'fixVersions': fixVersions})
     except JIRAError as e:
-        print e.status_code, e.text, issue.key
+        print(e.status_code, e.text, issue.key)
 
 def scan_for_tickets():
     issue_pattern = '{}-[\d]+'.format(project_format)
@@ -70,6 +72,10 @@ def scan_for_tickets():
             found_issue_id = issue_id_match.group()
             issues.append(found_issue_id)
     return list(set(issues))
+
+def render_issue(issue):
+    issue_url = jira_server + "/browse/" + issue.key
+    return " * [" + issue.key + "](" + issue_url + ") " + issue.fields.summary + "\n"
 
 props = load_properties('gradle.properties')
 release_version = props['versionMajor'] + '.' + props['versionMinor'] + '.' + props['versionPatch']
@@ -105,13 +111,13 @@ changelogHeading = "## [" + release_version + "] Beta " + props['buildNumber'] +
 changelog = ""
 if added:
     changelog += "### Added\n"
-    for issues_added in added:
-        changelog += " * " + issues_added.key + " " + issues_added.fields.summary + "\n"
+    for issue in added:
+        changelog += render(issue)
     changelog += "\n"
 if bugs:
     changelog += "### Fixed\n"
-    for bug in bugs:
-        changelog += " * " + bug.key + " " + bug.fields.summary  + "\n"
+    for issue in bugs:
+        changelog += render(issue)
 
 print(changelog)
 
@@ -128,4 +134,3 @@ contents.insert(8, changelogHeading)
 f = open(changelogFilename, "w+")
 f.writelines(contents)
 f.close()
-
