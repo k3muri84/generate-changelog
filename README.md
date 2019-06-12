@@ -15,9 +15,10 @@ None of them is dealing with jira.
 - [x] insert changeset to changelog file
 - [x] set release / fix version in jira
 - [ ] if list is empty show alternative output with version info
+- [ ] detect shallow clone and error
 - [ ] optional: transition issues
 - [x] optional: insert build types (e.g. beta or production)
-- [x] migrate to python3
+- [ ] migrate to python3
 
 ## Requirements
 - python 2.x
