@@ -14,6 +14,7 @@ None of them is dealing with jira.
 - [x] query type and summary for the collected jira issues
 - [x] insert changeset to changelog file
 - [x] set release / fix version in jira
+- [ ] support unicode in jira titles
 - [ ] if list is empty show alternative output with version info
 - [ ] detect shallow clone and error
 - [ ] optional: transition issues
