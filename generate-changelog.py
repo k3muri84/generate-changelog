@@ -119,6 +119,7 @@ if bugs:
     for issue in bugs:
         changelog += render(issue)
 
+changelog = changelog.encode('utf8', 'replace')
 print(changelog)
 
 f = open("CHANGES.md", "w+")
