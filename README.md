@@ -33,7 +33,7 @@ None of them is dealing with jira.
 
 ### basic configuration
 - setup jira url
-- define jira project in which fix version should be created
+- define jira projects in which fix version should be created
 - configure possible issue type for your project
 
 ### getting version info
@@ -50,5 +50,5 @@ or if you want to scan branch infos too use instead:
 execute `./generate-changelog.py` in the repository folder
 
 
-
 [1]: https://keepachangelog.com/en/1.0.0/
+

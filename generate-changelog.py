@@ -17,8 +17,8 @@ jira_server = 'https://jira.yourdomain.com'
 jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
 # configure your jira project or just leave it to find all
 project_format = '[A-Z][A-Z]+'
-# define jira project to create version
-project_version = 'CORE'
+# define jira projects to create version
+projects = ['CORE', 'PAS']
 
 # configure possible issue types
 bugTypes = ['Bug', 'InstaBug']
@@ -79,18 +79,20 @@ def render_issue(issue):
 
 props = load_properties('gradle.properties')
 release_version = props['versionMajor'] + '.' + props['versionMinor'] + '.' + props['versionPatch']
-version_exists = False
-versions = jira.project_versions(project_version)
-for version in versions:
-    if version.name == release_version:
-        version_exists = True
-        break
 
-if(version_exists):
-    print('version ' + release_version + ' exists - dont create one\n')
-else:
-    print('version ' + release_version + ' not found - creating it!\n')
-    version = jira.create_version(release_version, project_version)
+for project in projects:
+    version_exists = False
+    versions = jira.project_versions(project)
+    for version in versions:
+        if version.name == release_version:
+            version_exists = True
+            break
+
+    if(version_exists):
+        print('version ' + release_version + ' in project ' + project + ' exists - dont create one\n')
+    else:
+        print('version ' + release_version + ' in project ' + project + ' not found - creating it!\n')
+        version = jira.create_version(release_version, project_version)
 
 issues = []
 added = []
