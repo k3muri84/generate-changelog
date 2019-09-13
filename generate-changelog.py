@@ -25,7 +25,17 @@ bugTypes = ['Bug', 'InstaBug']
 featureTypes = ['Story, Task']
 refactoringTypes = ['Refactoring']
 
+# if you building different types (alpha,beta,production) and 
+# want to differ in the changelog, specify default here and/or
+# pass it as first argument
+buildType = "Release"
+if len(sys.argv) > 1:
+    buildType = sys.argv[1]
+
 changelogFilename = "CHANGELOG.md"
+
+# generate markdown with hyperlinks
+render_link = False
 
 # git log to find all changes since last tag (use on master only, only uses commit messages)
 git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'
@@ -73,9 +83,13 @@ def scan_for_tickets():
             issues.append(found_issue_id)
     return list(set(issues))
 
-def render_issue(issue):
-    issue_url = jira_server + "/browse/" + issue.key
-    return " * [" + issue.key + "](" + issue_url + ") " + issue.fields.summary + "\n"
+def render(issue):
+    if(render_link):
+        issue_url = jira_server + "/browse/" + issue.key
+        issue_line = " * [" + issue.key + "](" + issue_url + ") " + issue.fields.summary + "\n"
+    else:
+        issue_line = " * " + issue.key + " " + issue.fields.summary + "\n"
+    return issue_line
 
 props = load_properties('gradle.properties')
 release_version = props['versionMajor'] + '.' + props['versionMinor'] + '.' + props['versionPatch']
@@ -100,7 +114,10 @@ bugs = []
 
 issues = scan_for_tickets()
 for issueCode in issues:
-    issue = jira.issue(issueCode)
+    try:
+        issue = jira.issue(issueCode)
+    except JIRAError as e:
+        print(issueCode + "not found")
     set_fixVersions(issue, version)
     if issue.fields.issuetype.name in bugTypes:
         bugs.append(issue)
@@ -109,7 +126,7 @@ for issueCode in issues:
     else:
         added.append(issue)
 
-changelogHeading = "## [" + release_version + "] Beta " + props['buildNumber'] + " - " + datetime.today().strftime("%Y-%m-%d") + "\n"
+changelogHeading = "## [" + release_version + "] " + buildType + " " + props['buildNumber'] + " - " + datetime.today().strftime("%Y-%m-%d") + "\n"
 changelog = ""
 if added:
     changelog += "### Added\n"
