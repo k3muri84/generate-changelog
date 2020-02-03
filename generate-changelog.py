@@ -24,6 +24,7 @@ projects = ['CORE', 'PAS']
 bugTypes = ['Bug', 'InstaBug']
 featureTypes = ['Story, Task']
 refactoringTypes = ['Refactoring']
+ignoredTypes = ['Sub-task']
 
 # if you building different types (alpha,beta,production) and 
 # want to differ in the changelog, specify default here and/or
@@ -121,6 +122,9 @@ for issueCode in issues:
     set_fixVersions(issue, version)
     if issue.fields.issuetype.name in bugTypes:
         bugs.append(issue)
+    elif issue.fields.issuetype.name in ignoredTypes:
+        # This issue is of a type that we want to ignore; continue with the next one.
+        continue
     elif issue.fields.issuetype.name in featureTypes:
         added.append(issue)
     else:
