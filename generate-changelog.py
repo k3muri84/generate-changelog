@@ -16,7 +16,7 @@ jira_server = 'https://jira.yourdomain.com'
 # configure authentication to your needs, see jira module docs for more auth modes
 jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
 # configure your jira project or just leave it to find all
-project_format = '[A-Z][A-Z]+'
+project_format = '[A-Z][A-Z\d]+'
 # define jira projects to create version
 projects = ['CORE', 'PAS']
 
