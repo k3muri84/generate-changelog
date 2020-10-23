@@ -14,20 +14,23 @@ from datetime import datetime
 
 # point to your jira installation
 jira_server = 'https://jira.yourdomain.com'
+
 # configure authentication to your needs, see jira module docs for more auth modes
 jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
+
 # configure your jira project or just leave it to find all
 project_format = '[A-Z][A-Z\d]+'
+
 # define jira projects to create version
 projects = ['CORE', 'PAS']
 
 # configure possible issue types
 bugTypes = ['Bug', 'InstaBug']
-featureTypes = ['Story, Task']
+featureTypes = ['Story', 'Task']
 refactoringTypes = ['Refactoring']
 ignoredTypes = ['Sub-task']
 
-# if you building different types (alpha,beta,production) and 
+# if you building different types (alpha,beta,production) and
 # want to differ in the changelog, specify default here and/or
 # pass it as first argument
 buildType = "Release"
