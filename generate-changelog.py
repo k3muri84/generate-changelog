@@ -6,6 +6,7 @@
 # install via `pip install jira`
 # https://jira.readthedocs.io/en/master/api.html#issue
 
+import sys
 import subprocess
 import re
 from jira import JIRA, JIRAError
