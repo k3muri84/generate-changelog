@@ -85,7 +85,7 @@ def scan_for_tickets():
         result = subprocess.check_output(git_cmd, shell=True)
     except subprocess.CalledProcessError as e:
         print("Calledprocerr")
-    for line in result.splitlines():
+    for line in result.decode('utf-8').splitlines():
         issue_id_match = re.search(issue_pattern, line)
         if issue_id_match:
             found_issue_id = issue_id_match.group()
