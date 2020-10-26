@@ -12,17 +12,15 @@ import re
 from jira import JIRA, JIRAError
 from datetime import datetime
 
+#### user config ######
+
 # point to your jira installation
 jira_server = 'https://jira.yourdomain.com'
 
 # configure authentication to your needs, see jira module docs for more auth modes
 jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
 
-# configure your jira project or just leave it to find all
-project_format = '[A-Z][A-Z\d]+'
-
-# define jira projects to create version
-projects = ['CORE', 'PAS','DC']
+changelogFilename = "CHANGELOG.md"
 
 # configure possible issue types
 bugTypes = ['Bug', 'InstaBug']
@@ -37,15 +35,18 @@ buildType = "Release"
 if len(sys.argv) > 1:
     buildType = sys.argv[1]
 
-changelogFilename = "CHANGELOG.md"
-
 # generate markdown with hyperlinks
 render_link = False
 
-# git log to find all changes since last tag (use on master only, only uses commit messages)
+##### END user config #####
+
+project_format = '[A-Z][A-Z\d]+'
 git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'
-# if you want to print branch infos too use lightly different output
-# git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --oneline --decorate'
+
+projects = []
+issues = []
+added = []
+bugs = []
 
 # parse version this example uses a gradle property file
 # load_properties taken from:
@@ -86,7 +87,13 @@ def scan_for_tickets():
         if issue_id_match:
             found_issue_id = issue_id_match.group()
             issues.append(found_issue_id)
+            collect_project(found_issue_id)
     return list(set(issues))
+
+def collect_project(issue_id):
+    project_id = issue_id.split("-", 1)[0]
+    if project_id not in projects:
+        projects.append(project_id)
 
 def render(issue):
     if(render_link):
@@ -115,10 +122,6 @@ for project in projects:
             version = jira.create_version(release_version, project)
         except JIRAError as e:
             print('Not able to create version for: ' + project.name + '! Please check if script has admin rights')
-
-issues = []
-added = []
-bugs = []
 
 issues = scan_for_tickets()
 for issueCode in issues:
