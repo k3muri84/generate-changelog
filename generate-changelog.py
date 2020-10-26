@@ -22,7 +22,7 @@ jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
 project_format = '[A-Z][A-Z\d]+'
 
 # define jira projects to create version
-projects = ['CORE', 'PAS']
+projects = ['CORE', 'PAS','DC']
 
 # configure possible issue types
 bugTypes = ['Bug', 'InstaBug']
@@ -111,7 +111,10 @@ for project in projects:
         print('version ' + release_version + ' in project ' + project + ' exists - dont create one\n')
     else:
         print('version ' + release_version + ' in project ' + project + ' not found - creating it!\n')
-        version = jira.create_version(release_version, project_version)
+        try:
+            version = jira.create_version(release_version, project)
+        except JIRAError as e:
+            print('Not able to create version for: ' + project.name + '! Please check if script has admin rights')
 
 issues = []
 added = []
