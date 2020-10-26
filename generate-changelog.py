@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+# script taken from: https://github.com/echorebel/generate-changelog
 # regex part inspired by the commit hook script:
 # https://github.com/pbetkier/add-issue-id-hook
 # needs jira-python https://github.com/pycontribs/jira
@@ -12,12 +13,12 @@ import re
 from jira import JIRA, JIRAError
 from datetime import datetime
 
-#### user config ######
+# ~^~^~^~ user config ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
 
 # point to your jira installation
 jira_server = 'https://jira.yourdomain.com'
 
-# configure authentication to your needs, see jira module docs for more auth modes
+# configure authentication, see jira module docs for more auth modes
 jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
 
 changelogFilename = "CHANGELOG.md"
@@ -38,9 +39,9 @@ if len(sys.argv) > 1:
 # generate markdown with hyperlinks
 render_link = False
 
-##### END user config #####
+# ^-^-^ END user config ^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^
 
-project_format = '[A-Z][A-Z\d]+'
+project_format = r'[A-Z][A-Z\d]+'
 git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'
 
 projects = []
@@ -48,23 +49,24 @@ issues = []
 added = []
 bugs = []
 
-# parse version this example uses a gradle property file
-# load_properties taken from:
-# https://stackoverflow.com/questions/3595363/properties-file-in-python-similar-to-java-properties#8220790
+
 def load_properties(filepath, sep='=', comment_char='#'):
     """
-    Read the file passed as parameter as a properties file and return as dict
+    parse version this example uses a gradle property file
+    load_properties taken from:
+    https://stackoverflow.com/questions/3595363/properties-file-in-python-similar-to-java-properties#8220790
     """
     props = {}
     with open(filepath, "rt") as f:
         for line in f:
-            l = line.strip()
-            if l and not l.startswith(comment_char):
-                key_value = l.split(sep)
+            elements = line.strip()
+            if elements and not elements.startswith(comment_char):
+                key_value = elements.split(sep)
                 key = key_value[0].strip()
                 value = sep.join(key_value[1:]).strip().strip('"')
                 props[key] = value
     return props
+
 
 def set_fixVersions(issue, version):
     fixVersions = []
@@ -76,8 +78,9 @@ def set_fixVersions(issue, version):
     except JIRAError as e:
         print(e.status_code, e.text, issue.key)
 
+
 def scan_for_tickets():
-    issue_pattern = '{}-[\d]+'.format(project_format)
+    issue_pattern = r'{}-[\d]+'.format(project_format)
     try:
         result = subprocess.check_output(git_cmd, shell=True)
     except subprocess.CalledProcessError as e:
@@ -90,57 +93,73 @@ def scan_for_tickets():
             collect_project(found_issue_id)
     return list(set(issues))
 
+
 def collect_project(issue_id):
     project_id = issue_id.split("-", 1)[0]
     if project_id not in projects:
         projects.append(project_id)
 
+
+def create_versions(release_version):
+    for project in projects:
+        version_exists = False
+        versions = jira.project_versions(project)
+        for version in versions:
+            if version.name == release_version.name:
+                version_exists = True
+                break
+
+        sys.stdout.write('version ' + release_version.name
+                         + ' in project ' + project)
+        if(version_exists):
+            print(' exists - not creating one')
+        else:
+            print(' not found - creating it!')
+            try:
+                jira.create_version(release_version.name, project).name
+            except JIRAError as e:
+                print('Not able to create version for: ' + project
+                      + '! Please check if script has admin rights')
+                pass
+
+
 def render(issue):
     if(render_link):
         issue_url = jira_server + "/browse/" + issue.key
-        issue_line = " * [" + issue.key + "](" + issue_url + ") " + issue.fields.summary + "\n"
+        issue_line = (" * [" + issue.key + "](" + issue_url + ") "
+                      + issue.fields.summary + "\n")
     else:
         issue_line = " * " + issue.key + " " + issue.fields.summary + "\n"
     return issue_line
 
+
 props = load_properties('gradle.properties')
-release_version = props['versionMajor'] + '.' + props['versionMinor'] + '.' + props['versionPatch']
-
-for project in projects:
-    version_exists = False
-    versions = jira.project_versions(project)
-    for version in versions:
-        if version.name == release_version:
-            version_exists = True
-            break
-
-    if(version_exists):
-        print('version ' + release_version + ' in project ' + project + ' exists - dont create one\n')
-    else:
-        print('version ' + release_version + ' in project ' + project + ' not found - creating it!\n')
-        try:
-            version = jira.create_version(release_version, project)
-        except JIRAError as e:
-            print('Not able to create version for: ' + project.name + '! Please check if script has admin rights')
+release = type('', (), {})()
+release.name = (props['versionMajor'] + '.'
+                + props['versionMinor']
+                + '.' + props['versionPatch'])
 
 issues = scan_for_tickets()
+create_versions(release)
 for issueCode in issues:
     try:
         issue = jira.issue(issueCode)
     except JIRAError as e:
         print(issueCode + "not found")
-    set_fixVersions(issue, version)
+    set_fixVersions(issue, release)
     if issue.fields.issuetype.name in bugTypes:
         bugs.append(issue)
     elif issue.fields.issuetype.name in ignoredTypes:
-        # This issue is of a type that we want to ignore; continue with the next one.
+        # ignore issue type; continue with the next one.
         continue
     elif issue.fields.issuetype.name in featureTypes:
         added.append(issue)
     else:
         added.append(issue)
 
-changelogHeading = "## [" + release_version + "] " + buildType + " " + props['buildNumber'] + " - " + datetime.today().strftime("%Y-%m-%d") + "\n"
+changelogHeading = "## [" + release.name + "] " + buildType + " " \
+                    + props['buildNumber'] + " - " \
+                    + datetime.today().strftime("%Y-%m-%d") + "\n"
 changelog = ""
 if added:
     changelog += "### Added\n"
@@ -157,7 +176,8 @@ print(changelog)
 
 # writing additional file with just the changes for custom usage
 # e.g slack notifications, tweak for your needs
-notificationHeading = ":android: " + release_version + " " + buildType + " (" + props['buildNumber'] + ") released\n"
+notificationHeading = ":android: " + release.name + " " + buildType \
+    + " (" + props['buildNumber'] + ") released\n"
 f = open("CHANGES.md", "w+")
 f.write(notificationHeading)
 f.write(changelog)
