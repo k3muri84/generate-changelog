@@ -152,7 +152,11 @@ if bugs:
 changelog = changelog.encode('utf8', 'replace')
 print(changelog)
 
+# writing additional file with just the changes for custom usage
+# e.g slack notifications, tweak for your needs
+notificationHeading = ":android: " + release_version + " " + buildType + " (" + props['buildNumber'] + ") released\n"
 f = open("CHANGES.md", "w+")
+f.write(notificationHeading)
 f.write(changelog)
 f.close()
 
