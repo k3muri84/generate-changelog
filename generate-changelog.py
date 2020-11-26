@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # script taken from: https://github.com/echorebel/generate-changelog
 # regex part inspired by the commit hook script:
@@ -40,6 +40,7 @@ if len(sys.argv) > 1:
 render_link = False
 
 # ^-^-^ END user config ^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^
+
 
 project_format = r'[A-Z][A-Z\d]+'
 git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'
@@ -85,7 +86,7 @@ def scan_for_tickets():
         result = subprocess.check_output(git_cmd, shell=True)
     except subprocess.CalledProcessError as e:
         print("Calledprocerr")
-    for line in result.splitlines():
+    for line in result.decode('utf-8').splitlines():
         issue_id_match = re.search(issue_pattern, line)
         if issue_id_match:
             found_issue_id = issue_id_match.group()
@@ -119,7 +120,7 @@ def create_versions(release_version):
                 jira.create_version(release_version.name, project).name
             except JIRAError as e:
                 print('Not able to create version for: ' + project
-                      + '! Please check if script has admin rights')
+                      + '! Please check if script user has admin rights')
                 pass
 
 
@@ -171,7 +172,6 @@ if bugs:
     for issue in bugs:
         changelog += render(issue)
 
-changelog = changelog.encode('utf8', 'replace')
 print(changelog)
 
 # writing additional file with just the changes for custom usage
@@ -192,3 +192,4 @@ contents.insert(8, changelogHeading)
 f = open(changelogFilename, "w+")
 f.writelines(contents)
 f.close()
+

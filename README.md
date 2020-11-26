@@ -9,7 +9,7 @@ If you just look for a changelog generator for github, jump to [this](https://gi
 There is also a [js based changelog generator](https://github.com/lob/generate-changelog).
 None of them is dealing with jira.
 
-## Open ToDos
+## ToDos
 - [x] get auth for jira, see https://jira.readthedocs.io/en/latest/examples.html#authentication
 - [x] query type and summary for the collected jira issues
 - [x] insert changeset to changelog file
@@ -19,10 +19,10 @@ None of them is dealing with jira.
 - [ ] detect shallow clone and error
 - [ ] optional: transition issues
 - [x] optional: insert build types (e.g. beta or production)
-- [ ] migrate to python3
+- [x] migrate to python3
 
 ## Requirements
-- python 2.x
+- python 3.x
 - `pip` for installing jira module
 - [jira-python](https://github.com/pycontribs/jira)
     - install via `pip install jira`
@@ -41,9 +41,9 @@ currently the script parses a gradle property file, tweak the script to your nee
 welcome
 
 ### git history
-Default: using git log to find all changes since last tag (use on master only, only uses commit messages)  
-`git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --format="%s"'`  
-or if you want to scan branch infos too use instead:  
+Default: using git log to find all changes since last tag (use on master only, only uses commit messages)
+`git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --format="%s"'`
+or if you want to scan branch infos too use instead:
 `git_cmd = 'git log $(git describe --abbrev=0 --tag)...HEAD --oneline --decorate'`
 
 ### Quick Usage
