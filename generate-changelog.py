@@ -18,7 +18,10 @@ from datetime import datetime
 # point to your jira installation
 jira_server = 'https://jira.yourdomain.com'
 
-# configure authentication, see jira module docs for more auth modes
+"""
+configure authentication, see jira module docs for more auth modes
+https://jira.readthedocs.io/en/latest/examples.html#authentication
+"""
 jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
 
 changelogFilename = "CHANGELOG.md"
