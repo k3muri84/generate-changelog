@@ -22,7 +22,7 @@ jira_server = 'https://jira.yourdomain.com'
 configure authentication, see jira module docs for more auth modes
 https://jira.readthedocs.io/en/latest/examples.html#authentication
 """
-jira = JIRA(server=(jira_server), auth=('changelogbot', 'cryp71cp455w0rd'))
+jira = JIRA(server=(jira_server), basic_auth=('changelogbot', 'cryp71cp455w0rd'))
 
 changelogFilename = "CHANGELOG.md"
 
