@@ -107,7 +107,12 @@ def collect_project(issue_id):
 def create_versions(release_version):
     for project in projects:
         version_exists = False
-        versions = jira.project_versions(project)
+        try:
+            versions = jira.project_versions(project)
+        except JIRAError as e:
+            print("Could not find project: " + project)
+            continue
+
         for version in versions:
             if version.name == release_version.name:
                 version_exists = True
