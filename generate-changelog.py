@@ -7,6 +7,7 @@
 # install via `pip install jira`
 # https://jira.readthedocs.io/en/master/api.html#issue
 
+import os
 import sys
 import subprocess
 import re
@@ -14,15 +15,6 @@ from jira import JIRA, JIRAError
 from datetime import datetime
 
 # ~^~^~^~ user config ~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~^~
-
-# point to your jira installation
-jira_server = 'https://jira.yourdomain.com'
-
-"""
-configure authentication, see jira module docs for more auth modes
-https://jira.readthedocs.io/en/latest/examples.html#authentication
-"""
-jira = JIRA(server=(jira_server), basic_auth=('changelogbot', 'cryp71cp455w0rd'))
 
 changelogFilename = "CHANGELOG.md"
 
@@ -44,6 +36,16 @@ render_link = False
 
 # ^-^-^ END user config ^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^
 
+"""
+Credentials for authentication should be provided by environment.
+Feel free to come up with a more secure option.
+See jira module docs for more auth modes
+https://jira.readthedocs.io/en/latest/examples.html#authentication
+"""
+jira_server = os.environ['JIRA_SERVER']
+jira_username = os.environ['JIRA_USER']
+jira_password = os.environ['JIRA_PASSWORD']
+jira = JIRA(server=(jira_server),basic_auth=(jira_username, jira_password))
 
 project_format = r'[A-Z][A-Z\d]+'
 git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'

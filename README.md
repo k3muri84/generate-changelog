@@ -35,6 +35,8 @@ None of them is dealing with jira.
 - setup jira url
 - define jira projects in which fix version should be created
 - configure possible issue type for your project
+- export JIRA_SERVER url, JIRA_USER and JIRA_PASSWORD to environment
+
 
 ### getting version info
 currently the script parses a gradle property file, tweak the script to your needs: e.g. pass info via argument, PR
