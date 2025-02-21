@@ -1,8 +1,13 @@
 # generate-changelog
-generates changelog with jira-tickets from git and sets version in jira tickets
+generates changelog with jira-tickets from git and
+create/set version in jira tickets
 
 ## Goals
-Many developers working with Jira all workday. This tools creates a changelog for a release listing all Jira tickets since last release (in this case the last tag) and sets the fix version in Jira so one can see later in which release it was included. This way everyone gets the best of two worlds - having a [changelog][1] and see version info on Jira tickets.
+Many developers working with Jira all workday. This tools creates a changelog
+for a release listing all Jira tickets since last release (in this case the
+last tag) and sets the fix version in Jira so one can see later in which
+release it was included. This way everyone gets the best of two worlds:
+having a [changelog][1] and see version info on Jira tickets.
 
 ## Alternatives
 If you just look for a changelog generator for github, jump to [this](https://github.com/github-changelog-generator/github-changelog-generator).
@@ -15,19 +20,20 @@ None of them is dealing with jira.
 - [x] insert changeset to changelog file
 - [x] set release / fix version in jira
 - [x] support unicode in jira titles
+- [x] optional: insert build types (e.g. beta or production)
+- [x] migrate to python3
 - [ ] if list is empty show alternative output with version info
 - [ ] detect shallow clone and error
 - [ ] optional: transition issues
-- [x] optional: insert build types (e.g. beta or production)
-- [x] migrate to python3
+- [ ] jira cloud support
 
 ## Requirements
 - python 3.x
 - `pip` for installing jira module
 - [jira-python](https://github.com/pycontribs/jira)
     - install via `pip install jira`
-- jira admin rights - to create fix versions
-
+- user with jira project admin rights - to create fix versions
+- or api token https://id.atlassian.com/manage-profile/security/api-tokens
 
 ## Usage
 

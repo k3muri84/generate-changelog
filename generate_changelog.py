@@ -36,25 +36,17 @@ render_link = False
 
 # ^-^-^ END user config ^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^-^
 
-"""
-Credentials for authentication should be provided by environment.
-Feel free to come up with a more secure option.
-See jira module docs for more auth modes
-https://jira.readthedocs.io/en/latest/examples.html#authentication
-"""
-jira_server = os.environ['JIRA_SERVER']
-jira_username = os.environ['JIRA_USER']
-jira_password = os.environ['JIRA_PASSWORD']
-jira = JIRA(server=(jira_server),basic_auth=(jira_username, jira_password))
-
-project_format = r'[A-Z][A-Z\d]+'
-git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'
-
-projects = []
-issues = []
-added = []
-bugs = []
-
+def get_jira_client():
+    """
+    Credentials for authentication should be provided by environment.
+    Feel free to come up with a more secure option.
+    See jira module docs for more auth modes
+    https://jira.readthedocs.io/en/latest/examples.html#authentication
+    """
+    jira_server = os.environ['JIRA_SERVER']
+    jira_username = os.environ['JIRA_USER']
+    jira_password = os.environ['JIRA_PASSWORD']
+    return JIRA(server=(jira_server),basic_auth=(jira_username, jira_password))
 
 def load_properties(filepath, sep='=', comment_char='#'):
     """
@@ -143,63 +135,74 @@ def render(issue):
         issue_line = " * " + issue.key + " " + issue.fields.summary + "\n"
     return issue_line
 
+if __name__ == '__main__':
 
-props = load_properties('gradle.properties')
-release = type('', (), {})()
-release.name = (props['versionMajor'] + '.'
-                + props['versionMinor']
-                + '.' + props['versionPatch'])
+    jira = get_jira_client()
 
-issues = scan_for_tickets()
-create_versions(release)
-for issueCode in issues:
-    try:
-        issue = jira.issue(issueCode)
-    except JIRAError as e:
-        print(issueCode + "not found")
-    set_fixVersions(issue, release)
-    if issue.fields.issuetype.name in bugTypes:
-        bugs.append(issue)
-    elif issue.fields.issuetype.name in ignoredTypes:
-        # ignore issue type; continue with the next one.
-        continue
-    elif issue.fields.issuetype.name in featureTypes:
-        added.append(issue)
-    else:
-        added.append(issue)
+    project_format = r'[A-Z][A-Z\d]+'
+    git_cmd = 'git log $(git describe --abbrev=0 --tag)..HEAD --format="%s"'
 
-changelogHeading = "## [" + release.name + "] " + buildType + " " \
-                    + props['buildNumber'] + " - " \
-                    + datetime.today().strftime("%Y-%m-%d") + "\n"
-changelog = ""
-if added:
-    changelog += "### Added\n"
-    for issue in added:
-        changelog += render(issue)
+    projects = []
+    issues = []
+    added = []
+    bugs = []
+
+    props = load_properties('gradle.properties')
+    release = type('', (), {})()
+    release.name = (props['versionMajor'] + '.'
+                    + props['versionMinor']
+                    + '.' + props['versionPatch'])
+
+    issues = scan_for_tickets()
+    create_versions(release)
+    for issueCode in issues:
+        try:
+            issue = jira.issue(issueCode)
+        except JIRAError as e:
+            print(issueCode + " not found")
+        set_fixVersions(issue, release)
+        if issue.fields.issuetype.name in bugTypes:
+            bugs.append(issue)
+        elif issue.fields.issuetype.name in ignoredTypes:
+            # ignore issue type; continue with the next one.
+            continue
+        elif issue.fields.issuetype.name in featureTypes:
+            added.append(issue)
+        else:
+            added.append(issue)
+
+    changelogHeading = "## [" + release.name + "] " + buildType + " " \
+                        + props['buildNumber'] + " - " \
+                        + datetime.today().strftime("%Y-%m-%d") + "\n"
+    changelog = ""
+    if added:
+        changelog += "### Added\n"
+        for issue in added:
+            changelog += render(issue)
+        changelog += "\n"
+    if bugs:
+        changelog += "### Fixed\n"
+        for issue in bugs:
+            changelog += render(issue)
+
+    print(changelog)
+
+    # writing additional file with just the changes for custom usage
+    # e.g slack notifications, tweak for your needs
+    notificationHeading = ":android: " + release.name + " " + buildType \
+        + " (" + props['buildNumber'] + ") released\n"
+    f = open("CHANGES.md", "w+")
+    f.write(notificationHeading)
+    f.write(changelog)
+    f.close()
+
     changelog += "\n"
-if bugs:
-    changelog += "### Fixed\n"
-    for issue in bugs:
-        changelog += render(issue)
-
-print(changelog)
-
-# writing additional file with just the changes for custom usage
-# e.g slack notifications, tweak for your needs
-notificationHeading = ":android: " + release.name + " " + buildType \
-    + " (" + props['buildNumber'] + ") released\n"
-f = open("CHANGES.md", "w+")
-f.write(notificationHeading)
-f.write(changelog)
-f.close()
-
-changelog += "\n"
-f = open(changelogFilename, "r")
-contents = f.readlines()
-f.close()
-contents.insert(8, changelog)
-contents.insert(8, changelogHeading)
-f = open(changelogFilename, "w+")
-f.writelines(contents)
-f.close()
+    f = open(changelogFilename, "r")
+    contents = f.readlines()
+    f.close()
+    contents.insert(8, changelog)
+    contents.insert(8, changelogHeading)
+    f = open(changelogFilename, "w+")
+    f.writelines(contents)
+    f.close()
 
