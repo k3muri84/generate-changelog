@@ -34,6 +34,8 @@ None of them is dealing with jira.
     - install via `pip install jira`
 - user with jira project admin rights - to create fix versions
 - or api token https://id.atlassian.com/manage-profile/security/api-tokens
+  see also https://support.atlassian.com/atlassian-account/docs/manage-api-tokens-for-your-atlassian-account/
+  and https://jira.readthedocs.io/examples.html#authentication
 
 ## Usage
 

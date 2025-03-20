@@ -7,6 +7,7 @@ issueCode = 'DC-5555'
 
 try:
     issue = jira.issue(issueCode)
+    print(issue)
 except JIRAError as e:
     print(issueCode + " not found")
 
